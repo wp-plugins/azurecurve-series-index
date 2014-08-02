@@ -200,7 +200,7 @@ function azc_si_config_page() {
 				<input name="page_options" type="hidden" value="width,title_separator,container_before,container_after,enable_header,header_before,header_after,detail_before,detail_after" />
 				
 				<!-- Adding security through hidden referrer field -->
-				<?php wp_nonce_field( 'azc_si' ); ?>
+				<?php wp_nonce_field( 'azc_si_nonce', 'azc_si_nonce' ); ?>
 				<table class="form-table">
 				<tr><td colspan=2>
 					When creating a series of posts there are two custom fields required:
@@ -274,88 +274,85 @@ function azc_si_admin_init() {
 }
 
 function process_azc_si_options() {
-	/*	// Check that user has proper security level
-	if ( !current_user_can( 'manage_options' ) ){
-		wp_die( 'Not allowed' );
+		// Check that user has proper security level
+	if ( !current_user_can( 'manage_options' ) ){ wp_die( 'Not allowed' ); }
+
+	if ( ! empty( $_POST ) && check_admin_referer( 'azc_si_nonce', 'azc_si_nonce' ) ) {	
+		// Retrieve original plugin options array
+		$options = get_option( 'azc_si_options' );
+		
+		$option_name = 'width';
+		if ( isset( $_POST[$option_name] ) ) {
+			$options[$option_name] = ($_POST[$option_name]);
+		}
+		$option_name = 'toggle_default';
+		if ( isset( $_POST[$option_name] ) ) {
+			$options[$option_name] = 1;
+		}else{
+			$options[$option_name] = 0;
+		}
+		$option_name = 'space_before_title_separator';
+		if ( isset( $_POST[$option_name] ) ) {
+			$options[$option_name] = 1;
+		}else{
+			$options[$option_name] = 0;
+		}
+		$option_name = 'title_separator';
+		if ( isset( $_POST[$option_name] ) ) {
+			$options[$option_name] = ($_POST[$option_name]);
+		}
+		$option_name = 'space_after_title_separator';
+		if ( isset( $_POST[$option_name] ) ) {
+			$options[$option_name] = 1;
+		}else{
+			$options[$option_name] = 0;
+		}
+		$option_name = 'container_before';
+		if ( isset( $_POST[$option_name] ) ) {
+			$options[$option_name] = ($_POST[$option_name]);
+		}
+		$option_name = 'container_after';
+		if ( isset( $_POST[$option_name] ) ) {
+			$options[$option_name] = ($_POST[$option_name]);
+		}
+		$option_name = 'enable_header';
+		if ( isset( $_POST[$option_name] ) ) {
+			$options[$option_name] = 1;
+		}else{
+			$options[$option_name] = 0;
+		}
+		$option_name = 'header_before';
+		if ( isset( $_POST[$option_name] ) ) {
+			$options[$option_name] = ($_POST[$option_name]);
+		}
+		$option_name = 'header_after';
+		if ( isset( $_POST[$option_name] ) ) {
+			$options[$option_name] = ($_POST[$option_name]);
+		}
+		$option_name = 'current_before';
+		if ( isset( $_POST[$option_name] ) ) {
+			$options[$option_name] = ($_POST[$option_name]);
+		}
+		$option_name = 'current_after';
+		if ( isset( $_POST[$option_name] ) ) {
+			$options[$option_name] = ($_POST[$option_name]);
+		}
+		$option_name = 'detail_before';
+		if ( isset( $_POST[$option_name] ) ) {
+			$options[$option_name] = ($_POST[$option_name]);
+		}
+		$option_name = 'detail_after';
+		if ( isset( $_POST[$option_name] ) ) {
+			$options[$option_name] = ($_POST[$option_name]);
+		}
+		
+		// Store updated options array to database
+		update_option( 'azc_si_options', $options );
+		
+		// Redirect the page to the configuration form that was processed
+		wp_redirect( add_query_arg( 'page', 'azurecurve-series-index', admin_url( 'options-general.php' ) ) );
+		exit;
 	}
-	// Check that nonce field created in configuration form is present
-	check_admin_referer( 'azc_si' );*/
-	settings_fields('azc_si');
-	
-	// Retrieve original plugin options array
-	$options = get_option( 'azc_si_options' );
-	
-	$option_name = 'width';
-	if ( isset( $_POST[$option_name] ) ) {
-		$options[$option_name] = ($_POST[$option_name]);
-	}
-	$option_name = 'toggle_default';
-	if ( isset( $_POST[$option_name] ) ) {
-		$options[$option_name] = 1;
-	}else{
-		$options[$option_name] = 0;
-	}
-	$option_name = 'space_before_title_separator';
-	if ( isset( $_POST[$option_name] ) ) {
-		$options[$option_name] = 1;
-	}else{
-		$options[$option_name] = 0;
-	}
-	$option_name = 'title_separator';
-	if ( isset( $_POST[$option_name] ) ) {
-		$options[$option_name] = ($_POST[$option_name]);
-	}
-	$option_name = 'space_after_title_separator';
-	if ( isset( $_POST[$option_name] ) ) {
-		$options[$option_name] = 1;
-	}else{
-		$options[$option_name] = 0;
-	}
-	$option_name = 'container_before';
-	if ( isset( $_POST[$option_name] ) ) {
-		$options[$option_name] = ($_POST[$option_name]);
-	}
-	$option_name = 'container_after';
-	if ( isset( $_POST[$option_name] ) ) {
-		$options[$option_name] = ($_POST[$option_name]);
-	}
-	$option_name = 'enable_header';
-	if ( isset( $_POST[$option_name] ) ) {
-		$options[$option_name] = 1;
-	}else{
-		$options[$option_name] = 0;
-	}
-	$option_name = 'header_before';
-	if ( isset( $_POST[$option_name] ) ) {
-		$options[$option_name] = ($_POST[$option_name]);
-	}
-	$option_name = 'header_after';
-	if ( isset( $_POST[$option_name] ) ) {
-		$options[$option_name] = ($_POST[$option_name]);
-	}
-	$option_name = 'current_before';
-	if ( isset( $_POST[$option_name] ) ) {
-		$options[$option_name] = ($_POST[$option_name]);
-	}
-	$option_name = 'current_after';
-	if ( isset( $_POST[$option_name] ) ) {
-		$options[$option_name] = ($_POST[$option_name]);
-	}
-	$option_name = 'detail_before';
-	if ( isset( $_POST[$option_name] ) ) {
-		$options[$option_name] = ($_POST[$option_name]);
-	}
-	$option_name = 'detail_after';
-	if ( isset( $_POST[$option_name] ) ) {
-		$options[$option_name] = ($_POST[$option_name]);
-	}
-	
-	// Store updated options array to database
-	update_option( 'azc_si_options', $options );
-	
-	// Redirect the page to the configuration form that was processed
-	wp_redirect( add_query_arg( 'page', 'azurecurve-series-index', admin_url( 'options-general.php' ) ) );
-	exit;
 }
 
 ?>
