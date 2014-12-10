@@ -2,10 +2,15 @@
 /*
 Plugin Name: azurecurve Series Index
 Plugin URI: http://wordpress.azurecurve.co.uk/plugins/series-index
-Description: Displays Index of Series Posts using series-index Shortcode. This plugin is multi-site compatible and contains an inbuilt show/hide toggle.
-Version: 1.0.2
+
+Description: Displays Index of Series Posts using series-index Shortcode. This plugin is multi-site compatible, contains an inbuilt show/hide toggle and supports localisation.
+Version: 1.0.3
+
 Author: Ian Grieve
 Author URI: http://wordpress.azurecurve.co.uk
+
+Text Domain: azurecurve-series-index
+Domain Path: /languages
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -20,7 +25,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
 
 The full copy of the GNU General Public License is available here: http://www.gnu.org/licenses/gpl.txt
 
@@ -79,9 +83,8 @@ function azc_si_set_default_options($networkwide) {
 	}
 }
 
-
-
 add_shortcode( 'series-index', 'azc_display_series_index' );
+
 add_action('wp_enqueue_scripts', 'azc_si_load_css');
 add_action('wp_enqueue_scripts', 'azc_si_load_jquery');
 
@@ -151,7 +154,7 @@ function azc_display_series_index($atts, $content = null) {
 	$output = str_replace('$width', $width, stripslashes($options['container_before'])).$header.$rows.stripslashes($options['container_after']);
 	if ($toggle == 1){
 		if (strlen($heading) == 0){
-			$heading = "Click to show/hide the ".$series_title." Series Index";
+			$heading = __(sprintf('Click to show/hide the %s Series Index', '$series_title'), 'azurecurve-series-index');
 		}
 		$output = "<h3 class='azc_si_toggle'><a href='#'>".$heading."</a></h3><div class='azc_si_toggle_container'>".$output."</div>";
 	}
@@ -168,7 +171,7 @@ function azc_si_plugin_action_links($links, $file) {
     }
 
     if ($file == $this_plugin) {
-        $settings_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page=azurecurve-series-index">Settings</a>';
+        $settings_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page=azurecurve-series-index">'.__('Settings', 'azurecurve-series-index').'</a>';
         array_unshift($links, $settings_link);
     }
 
@@ -186,7 +189,7 @@ function azc_si_settings_menu() {
 
 function azc_si_config_page() {
 	if (!current_user_can('manage_options')) {
-        wp_die('You do not have sufficient permissions to access this page.');
+        wp_die(__('You do not have sufficient permissions to access this page.', 'azurecurve-series-index'));
     }
 	
 	// Retrieve plugin configuration options from database
@@ -194,7 +197,7 @@ function azc_si_config_page() {
 	?>
 	<div id="azc-si-general" class="wrap">
 		<fieldset>
-			<h2>azurecurve Series Index Configuration</h2>
+			<h2><?php _e('azurecurve Series Index Configuration', 'azurecurve-series-index'); ?></h2>
 			<form method="post" action="admin-post.php">
 				<input type="hidden" name="action" value="save_azc_si_options" />
 				<input name="page_options" type="hidden" value="width,title_separator,container_before,container_after,enable_header,header_before,header_after,detail_before,detail_after" />
@@ -203,62 +206,67 @@ function azc_si_config_page() {
 				<?php wp_nonce_field( 'azc_si_nonce', 'azc_si_nonce' ); ?>
 				<table class="form-table">
 				<tr><td colspan=2>
-					When creating a series of posts there are two custom fields required:
+					<?php _e('When creating a series of posts there are two custom fields required:', 'azurecurve-series-index'); ?>
 					<ol>
-					<li><strong><em>Series - </em></strong>This is the title of the series.</li>
-					<li><strong><em>Series Position - </em></strong>This is the order the posts should be displayed in; any post which is part of the series, but should not be included in the displayed index should have a series index of <strong>0</strong>.</li>
+					<li><?php '<strong><em>Series - </em></strong>'._e('This is the title of the series.', 'azurecurve-series-index'); ?></li>
+					<li><?php '<strong><em>Series Position - </em></strong>'._e('This is the order the posts should be displayed in; any post which is part of the series, but should not be included in the displayed index should have a series index of <strong>0</strong>.', 'azurecurve-series-index'); ?></li>
 					</ol>
-					Place the <strong>[series-index]</strong> shortcode in the post where the index should be displayed. The series index to be displayed is automatically derived from the <strong>Series</strong> custom field. The shortcode can be used in any post or page if the title parameter is used (see below).
+					<?php _e(sprintf('Place the %1$s shortcode in the post where the index should be displayed. The series index to be displayed is automatically derived from the %2$s custom field. The shortcode can be used in any post or page if the title parameter is used (see below).', '<strong>[series-index]</strong>', '<strong>Series</strong>'), 'azurecurve-series-index'); ?>
 					
-					There are three optional parameters which can be used:
+					<?php _e('There are three optional parameters which can be used:', 'azurecurve-series-index'); ?>
 					<ol>
-					<li><strong><em>title - </em></strong>only required if the series index is not being displayed in a post (or a page) within the series; set it to the title of the required series.
-					<li><strong><em>replace - </em></strong>only required if the series title in the post name differs from the <strong>Series</strong> custom field.
-					<li><strong><em>width - </em></strong>only required if the series index should have a different width to the default specified in the settings.
-					<li><strong><em>toggle - </em></strong>enables the show/hide toggle.
-					<li><strong><em>heading - </em></strong>only required to override the default toggle heading of "Click to show/hide <series title> Series Index".
+					<li><?php echo '<strong><em>title - </em></strong>';
+					_e('only required if the series index is not being displayed in a post (or a page) within the series; set it to the title of the required series.', 'azurecurve-series-index'); ?>
+					<li><?php echo '<strong><em>replace - </em></strong>';
+					_e('only required if the series title in the post name differs from the <strong>Series</strong> custom field.', 'azurecurve-series-index'); ?>
+					<li><?php echo '<strong><em>width - </em></strong>';
+					_e('only required if the series index should have a different width to the default specified in the settings.', 'azurecurve-series-index'); ?>
+					<li><?php echo '<strong><em>toggle - </em></strong>';
+					_e('enables the show/hide toggle.', 'azurecurve-series-index'); ?>
+					<li><?php echo '<strong><em>heading - </em></strong>';
+					_e('only required to override the default toggle heading of "Click to show/hide <series title> Series Index".', 'azurecurve-series-index'); ?>
 					</ol>
 				</td></tr>
-				<tr><th scope="row"><label for="width">Index Width</label></th><td>
+				<tr><th scope="row"><label for="width"><?php _e('Index Width', 'azurecurve-series-index'); ?></label></th><td>
 					<input type="text" name="width" value="<?php echo esc_html( stripslashes($options['width']) ); ?>" class="regular-text" />
-					<p class="description">Specify the width of the index; e.g. 75% or 500px</p>
+					<p class="description"><?php _e('Specify the width of the index; e.g. 75% or 500px', 'azurecurve-series-index'); ?></p>
 				</td></tr>
 				<tr><th scope="row">Toggle Default</th><td>
-					<fieldset><legend class="screen-reader-text"><span>Toggle Default</span></legend>
-					<label for="toggle_default"><input name="toggle_default" type="checkbox" id="toggle" value="1" <?php checked( '1', $options['toggle_default'] ); ?> />Show/Hide Toggle default enabled?</label>
+					<fieldset><legend class="screen-reader-text"><span><?php _e('Toggle Default', 'azurecurve-series-index'); ?></span></legend>
+					<label for="toggle_default"><input name="toggle_default" type="checkbox" id="toggle" value="1" <?php checked( '1', $options['toggle_default'] ); ?> /><?php _e('Show/Hide Toggle default enabled?', 'azurecurve-series-index'); ?></label>
 					</fieldset>
 				</td></tr>
-				<tr><th scope="row"><label for="width">Title Separator</label></th><td>
-					<fieldset><legend class="screen-reader-text"><span>Space before title separator?</span></legend>
-					<label for="space_before_title_separator"><input name="space_before_title_separator" type="checkbox" id="space_before_title_separator" value="1" <?php checked( '1', $options['space_before_title_separator'] ); ?> />Space before?</label>
-					<input type="text" name="title_separator" value="<?php echo esc_html( stripslashes($options['title_separator']) ); ?>" class="small-text" /><legend class="screen-reader-text"><span>Space after title separator?</span></legend>
-					<label for="space_after_title_separator"><input name="space_after_title_separator" type="checkbox" id="space_after_title_separator" value="1" <?php checked( '1', $options['space_after_title_separator'] ); ?> />Space after?</label>
+				<tr><th scope="row"><label for="width"><?php _e('Title Separator', 'azurecurve-series-index'); ?></label></th><td>
+					<fieldset><legend class="screen-reader-text"><span><?php _e('Space before title separator?', 'azurecurve-series-index'); ?></span></legend>
+					<label for="space_before_title_separator"><input name="space_before_title_separator" type="checkbox" id="space_before_title_separator" value="1" <?php checked( '1', $options['space_before_title_separator'] ); ?> /><?php _e('Space before?', 'azurecurve-series-index'); ?></label>
+					<input type="text" name="title_separator" value="<?php echo esc_html( stripslashes($options['title_separator']) ); ?>" class="small-text" /><legend class="screen-reader-text"><span><?php _e('Space after title separator?', 'azurecurve-series-index'); ?></span></legend>
+					<label for="space_after_title_separator"><input name="space_after_title_separator" type="checkbox" id="space_after_title_separator" value="1" <?php checked( '1', $options['space_after_title_separator'] ); ?> /><?php _e('Space after?', 'azurecurve-series-index'); ?></label>
 					</fieldset>
-					<p class="description" style='width: 70%; margin-left: 0; '>If your series title is included in the post title specify the separator and surrounding spaces. e.g. <strong>Installing Microsoft Dynamics GP 2013 R2: Introduction</strong> has a separator of <strong>:</strong> with a following space so the <strong>Space before?</strong> checkbox should be unmarked, <strong>:</strong> entered in the text box and the <strong>Space after?</strong> checkbox marked.</p>
+					<p class="description" style='width: 70%; margin-left: 0; '><?php _e('If your series title is included in the post title specify the separator and surrounding spaces. e.g. <strong>Installing Microsoft Dynamics GP 2013 R2: Introduction</strong> has a separator of <strong>:</strong> with a following space so the <strong>Space before?</strong> checkbox should be unmarked, <strong>:</strong> entered in the text box and the <strong>Space after?</strong> checkbox marked.', 'azurecurve-series-index'); ?></p>
 				</td></tr>
-				<tr><th scope="row"><label for="width">Start/End Index</label></th><td>
+				<tr><th scope="row"><label for="width"><?php _e('Start/End Index', 'azurecurve-series-index'); ?></label></th><td>
 					<input type="text" name="container_before" value="<?php echo esc_html( stripslashes($options['container_before']) ); ?>" class="regular-text" /> 
 					/ <input type="text" name="container_after" value="<?php echo esc_html( stripslashes($options['container_after']) ); ?>" class="regular-text" />
-					<p class="description" style='width: 70%; margin-left: 0; '>Enter $width to be swapped out for value specified in Width field otherwise 100% will be used.</p>
+					<p class="description" style='width: 70%; margin-left: 0; '><?php _e(sprintf('Enter %s to be swapped out for value specified in Width field otherwise 100%% will be used.', '$width'), 'azurecurve-series-index'); ?></p>
 				</td></tr>
-				<tr><th scope="row">Enable Header Row</th><td>
-					<fieldset><legend class="screen-reader-text"><span>Enable Header Row</span></legend>
-					<label for="enable_header"><input name="enable_header" type="checkbox" id="enable_header" value="1" <?php checked( '1', $options['enable_header'] ); ?> />Display header row?</label>
+				<tr><th scope="row"><?php _e('Enable Header Row', 'azurecurve-series-index'); ?></th><td>
+					<fieldset><legend class="screen-reader-text"><span><?php _e('Enable Header Row', 'azurecurve-series-index'); ?></span></legend>
+					<label for="enable_header"><input name="enable_header" type="checkbox" id="enable_header" value="1" <?php checked( '1', $options['enable_header'] ); ?> /><?php _e('Display header row?', 'azurecurve-series-index'); ?></label>
 					</fieldset>
 				</td></tr>
-				<tr><th scope="row"><label for="width">Start/End Header Row</label></th><td>
+				<tr><th scope="row"><label for="width"><?php _e('Start/End Header Row', 'azurecurve-series-index'); ?></label></th><td>
 					<input type="text" name="header_before" value="<?php echo esc_html( stripslashes($options['header_before']) );	?>" class="regular-text" /> 
 					/ <input type="text" name="header_after" value="<?php echo esc_html( stripslashes($options['header_after']) );	?>" class="regular-text" />
 				</td></tr>
-				<tr><th scope="row"><label for="width">Start/End Detail Row</label></th><td>
+				<tr><th scope="row"><label for="width"><?php _e('Start/End Detail Row', 'azurecurve-series-index'); ?></label></th><td>
 					<input type="text" name="detail_before" value="<?php echo esc_html( stripslashes($options['detail_before']) );	?>" class="regular-text" /> 
 					/ <input type="text" name="detail_after" value="<?php echo esc_html( stripslashes($options['detail_after']) );	?>" class="regular-text" />
 					<p class="description" style='width: 70%; margin-left: 0; '></p>
 				</td></tr>
-				<tr><th scope="row"><label for="width">Start/End Current Row</label></th><td>
+				<tr><th scope="row"><label for="width"><?php _e('Start/End Current Row', 'azurecurve-series-index'); ?></label></th><td>
 					<input type="text" name="current_before" value="<?php echo esc_html( stripslashes($options['current_before']) );	?>" class="regular-text" /> 
 					/ <input type="text" name="current_after" value="<?php echo esc_html( stripslashes($options['current_after']) );	?>" class="regular-text" />
-					<p class="description" style='width: 70%; margin-left: 0; '>The current post can be formatted differently to the other detail rows.</p>
+					<p class="description" style='width: 70%; margin-left: 0; '><?php _e('The current post can be formatted differently to the other detail rows.', 'azurecurve-series-index'); ?></p>
 				</td></tr>
 				</table>
 				<input type="submit" value="Submit" class="button-primary"/>
@@ -267,15 +275,26 @@ function azc_si_config_page() {
 	</div>
 <?php }
 
+// Add actions
+add_action('plugins_loaded', 'azc_si_load_plugin_textdomain');
+
+function azc_si_load_plugin_textdomain(){
+	
+	$loaded = load_plugin_textdomain( 'azurecurve-series-index', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	//if ($loaded){ echo 'true'; }else{ echo 'false'; }
+}
+
 add_action( 'admin_init', 'azc_si_admin_init' );
 
 function azc_si_admin_init() {
+	
 	add_action( 'admin_post_save_azc_si_options', 'process_azc_si_options' );
+	
 }
 
 function process_azc_si_options() {
 		// Check that user has proper security level
-	if ( !current_user_can( 'manage_options' ) ){ wp_die( 'Not allowed' ); }
+	if ( !current_user_can( 'manage_options' ) ){ wp_die( __('You do not have sufficient permissions to perform this action.', 'azurecurve-series-index') ); }
 
 	if ( ! empty( $_POST ) && check_admin_referer( 'azc_si_nonce', 'azc_si_nonce' ) ) {	
 		// Retrieve original plugin options array
