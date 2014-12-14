@@ -17,10 +17,10 @@ Displays Index of Series Posts using series-index Shortcode. This plugin is mult
 
 Two custom fields (Series and Series Position) need to be added to each post in the series; these fields are used for selecting the posts and ordering them when the index is displayed.
 
-This plugin supports language translations. If you want to translate this plugin please sent the .po and .mo files to wordpress.translations@azurecurve.co.uk for inclusion in the next version (full credit will be given). The .pot fie is in the languages folder of the plugin and can also be downloaded from the plugin page on http://wordpress.azurecurve.co.uk.
+This plugin supports language translations. If you want to translate this plugin please send the .po and .mo files to wordpress.translations@azurecurve.co.uk for inclusion in the next version (full credit will be given). The .pot file is in the languages folder of the plugin and can also be downloaded from the plugin page on http://wordpress.azurecurve.co.uk.
 
 Current translations:
-Serbian (sr_RS) translation by Borisa Djuraskovic of [Web Hosting Hub](http://www.webhostinghub.org/)
+Serbian (sr_RS) translation by Borisa Djuraskovic of [Web Hosting Hub](http://www.webhostinghub.com/)
 
 == Installation ==
 To install the plugin copy the <em>azurcurve-series-index</em> folder into your plug-in directory and activate it.
