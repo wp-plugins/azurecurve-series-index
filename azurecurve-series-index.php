@@ -4,7 +4,7 @@ Plugin Name: azurecurve Series Index
 Plugin URI: http://wordpress.azurecurve.co.uk/plugins/series-index
 
 Description: Displays Index of Series Posts using series-index Shortcode. This plugin is multi-site compatible, contains an inbuilt show/hide toggle and supports localisation.
-Version: 1.0.3
+Version: 1.0.4
 
 Author: Ian Grieve
 Author URI: http://wordpress.azurecurve.co.uk
@@ -154,7 +154,7 @@ function azc_display_series_index($atts, $content = null) {
 	$output = str_replace('$width', $width, stripslashes($options['container_before'])).$header.$rows.stripslashes($options['container_after']);
 	if ($toggle == 1){
 		if (strlen($heading) == 0){
-			$heading = __(sprintf('Click to show/hide the %s Series Index', '$series_title'), 'azurecurve-series-index');
+			$heading = __(sprintf('Click to show/hide the %s Series Index', $series_title), 'azurecurve-series-index');
 		}
 		$output = "<h3 class='azc_si_toggle'><a href='#'>".$heading."</a></h3><div class='azc_si_toggle_container'>".$output."</div>";
 	}

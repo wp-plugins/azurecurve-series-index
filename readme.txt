@@ -6,7 +6,7 @@ Plugin URI: http://wordpress.azurecurve.co.uk/plugins/series-index/
 Tags: series, toggle, posts, pages, post, page, series index, index
 Requires at least: 3.3
 Tested up to: 4.0.1
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,8 @@ To install the plugin copy the <em>azurcurve-series-index</em> folder into your 
 
 == Changelog ==
 Changes and feature additions for the Posts Archive plugin:
+= 1.0.4 =
+* Fix bug in display of series index header
 = 1.0.3 =
 * Multilanguage support added
 = 1.0.2 =
