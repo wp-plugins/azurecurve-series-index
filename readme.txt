@@ -41,6 +41,9 @@ Changes and feature additions for the Posts Archive plugin:
 == Screenshots ==
 1. Plugin settings page.
 2. Series Index on post.
+3. When creating a post add a new custom field; if the custom field doesn't exist click the Enter new link.
+4. Type in Series as the Name and enter your desired Value and click Add Custom Field. Repeat for the Series Position. 
+5. Custom fields on post.
 
 == Frequently Asked Questions ==
 = Can I translate this plugin? =
